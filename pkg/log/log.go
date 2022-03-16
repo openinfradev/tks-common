@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -74,17 +73,29 @@ func Disable() {
 }
 
 
-// for grpc IO logging
-func IOLog() grpc.UnaryClientInterceptor {
+// grpc IO logging for client-side 
+func IOLoggingForClientSide() grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-		start := time.Now()
 		err := invoker(ctx, method, req, reply, cc, opts...)
-		end := time.Now()
 
-		Info(fmt.Sprintf("[GRPC:%s][START:%s][END:%s][ERR:%v]", method, start.Format(time.RFC3339), end.Format(time.RFC3339), err))
-		Debug(fmt.Sprintf("[GRPC:%s][REQUEST %s][REPLY %s]", method, req, reply))
+		Info(fmt.Sprintf("[INTERNAL_CALL:%s][REQUEST %s][RESPONSE %s]", method, req, reply))
 		
 		return err
 	}
 }
 
+// grpc IO logging for server-side 
+func IOLoggingForServerSide() grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
+		Info(fmt.Sprintf("[START:%s][REQUEST %s]", info.FullMethod, req))
+
+		res, err := handler(ctx, req)
+		if err != nil {
+			Error(err)
+		}
+
+		Info(fmt.Sprintf("[END:%s][RESPONSE %s]", info.FullMethod, res))
+
+		return res, err
+	}
+}
