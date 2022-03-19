@@ -11,8 +11,8 @@ import (
 	pb "github.com/openinfradev/tks-proto/tks_pb"
 )
 
-func CreateCspInfoClient(address string, port int, enabledTLS bool, certPath string ) (*grpc.ClientConn, pb.CspInfoServiceClient, error) {
-	cc, err := createConnection(address, port, enabledTLS, certPath)
+func CreateCspInfoClient(address string, port int, tlsEnabled bool, certPath string ) (*grpc.ClientConn, pb.CspInfoServiceClient, error) {
+	cc, err := createConnection(address, port, tlsEnabled, certPath)
 	if err != nil {
 		log.Fatal("Could not connect to gRPC server", err)
 		return nil, nil, err
@@ -21,8 +21,8 @@ func CreateCspInfoClient(address string, port int, enabledTLS bool, certPath str
 	return cc, sc, nil
 }
 
-func CreateContractClient(address string, port int, enabledTLS bool, certPath string) (*grpc.ClientConn, pb.ContractServiceClient, error) {
-	cc, err := createConnection(address, port, enabledTLS, certPath)
+func CreateContractClient(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, pb.ContractServiceClient, error) {
+	cc, err := createConnection(address, port, tlsEnabled, certPath)
 	if err != nil {
 		log.Fatal("Could not connect to gRPC server", err)
 		return nil, nil, err
@@ -31,8 +31,8 @@ func CreateContractClient(address string, port int, enabledTLS bool, certPath st
 	return cc, sc, nil
 }
 
-func CreateClusterInfoClient(address string, port int, enabledTLS bool, certPath string) (*grpc.ClientConn, pb.ClusterInfoServiceClient, error) {
-	cc, err := createConnection(address, port, enabledTLS, certPath)
+func CreateClusterInfoClient(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, pb.ClusterInfoServiceClient, error) {
+	cc, err := createConnection(address, port, tlsEnabled, certPath)
 	if err != nil {
 		log.Fatal("Could not connect to gRPC server", err)
 		return nil, nil, err
@@ -41,8 +41,8 @@ func CreateClusterInfoClient(address string, port int, enabledTLS bool, certPath
 	return cc, sc, nil
 }
 
-func CreateAppInfoClient(address string, port int, enabledTLS bool, certPath string) (*grpc.ClientConn, pb.AppInfoServiceClient, error) {
-	cc, err := createConnection(address, port, enabledTLS, certPath)
+func CreateAppInfoClient(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, pb.AppInfoServiceClient, error) {
+	cc, err := createConnection(address, port, tlsEnabled, certPath)
 	if err != nil {
 		log.Fatal("Could not connect to gRPC server", err)
 		return nil, nil, err
@@ -52,16 +52,18 @@ func CreateAppInfoClient(address string, port int, enabledTLS bool, certPath str
 }
 
 
-func createConnection(address string, port int, enabledTLS bool, certPath string) (*grpc.ClientConn, error) {
+func createConnection(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, error) {
+	var err error
+	var creds credentials.TransportCredentials
 
-	creds := insecure.NewCredentials()
-	if enabledTLS {
-		_creds, err := loadTLSClientCredential( certPath )
+	if tlsEnabled {
+		creds, err = loadTLSClientCredential( certPath )
 		if err != nil {
 			return nil, err
 		}
-		creds = _creds
-	} 
+	} else {
+		creds = insecure.NewCredentials()
+	}
 
 	host := fmt.Sprintf("%s:%d", address, port)
 	conn, err := grpc.Dial(

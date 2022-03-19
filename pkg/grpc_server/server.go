@@ -14,7 +14,7 @@ import (
 
 )
 
-func CreateServer(port int, enabledTLS bool, certPath string, keyPath string) (*grpc.Server, net.Listener, error) {
+func CreateServer(port int, tlsEnabled bool, certPath string, keyPath string) (*grpc.Server, net.Listener, error) {
 	log.Info("Starting to listen port ", port)
 
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(port))
@@ -32,7 +32,7 @@ func CreateServer(port int, enabledTLS bool, certPath string, keyPath string) (*
 	    ),
 	}
 
-	if enabledTLS {
+	if tlsEnabled {
 		log.Info("TLS enabled!!!")
 		tlsCredentials, err := loadTLSCredentials(certPath, keyPath)
 		if err != nil {
