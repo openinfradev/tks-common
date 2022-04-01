@@ -11,6 +11,7 @@ import (
 )
 
 const postgresVersion = "latest"
+
 var testDBHost = ""
 var testDBPort = ""
 
@@ -70,4 +71,3 @@ func RemovePostgres(pool *dockertest.Pool, resource *dockertest.Resource) error 
 	}
 	return nil
 }
-

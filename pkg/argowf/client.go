@@ -1,15 +1,15 @@
 package argowf
 
 import (
-	"fmt"
-	"errors"
-	"sync"
-	"io"
 	"context"
+	"errors"
+	"fmt"
+	"io"
+	"sync"
 
-	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/codes"
 	"github.com/openinfradev/tks-common/pkg/log"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	apiclient "github.com/argoproj/argo-workflows/v3/pkg/apiclient"
 	workflowpkg "github.com/argoproj/argo-workflows/v3/pkg/apiclient/workflow"
@@ -35,7 +35,7 @@ func New(host string, port int) (Client, error) {
 			URL:                baseUrl,
 			Secure:             false,
 			InsecureSkipVerify: false,
-			HTTP1: true,
+			HTTP1:              true,
 		},
 		AuthSupplier: func() string {
 			return ""
@@ -52,8 +52,6 @@ func New(host string, port int) (Client, error) {
 	}, nil
 }
 
-
-
 func (c *ArgoClient) SumbitWorkflowFromWftpl(ctx context.Context, wftplName string, namespace string, parameters []string) (string, error) {
 	submitOpts := wfv1.SubmitOpts{}
 	submitOpts.Parameters = parameters
@@ -65,12 +63,12 @@ func (c *ArgoClient) SumbitWorkflowFromWftpl(ctx context.Context, wftplName stri
 		SubmitOptions: &submitOpts,
 	})
 
-	if( err != nil ){
-		log.Error( "Failed to submit : err ", err )
+	if err != nil {
+		log.Error("Failed to submit : err ", err)
 		return "", err
 	}
 
-	log.Debug( "SumbitWorkflowFromWftpl created name : ", created.Name )
+	log.Debug("SumbitWorkflowFromWftpl created name : ", created.Name)
 
 	return created.Name, nil
 }
@@ -83,7 +81,7 @@ func (c *ArgoClient) IsRunningWorkflowByContractId(ctx context.Context, nameSpac
 	})
 
 	if err != nil {
-		log.Error( "failed to get argo workflows namespace. err : ", err )
+		log.Error("failed to get argo workflows namespace. err : ", err)
 		return false, err
 	}
 
@@ -100,7 +98,7 @@ func (c *ArgoClient) IsRunningWorkflowByContractId(ctx context.Context, nameSpac
 }
 
 func (c *ArgoClient) WaitWorkflows(ctx context.Context, namespace string, workflowNames []string, ignoreNotFound, quiet bool) bool {
-	log.Debug( "waiting workflowNames : ", workflowNames )
+	log.Debug("waiting workflowNames : ", workflowNames)
 
 	var wg sync.WaitGroup
 	wfSuccessStatus := true
@@ -157,4 +155,3 @@ func (c *ArgoClient) waitOnOne(ctx context.Context, wfName, namespace string, ig
 		}
 	}
 }
-

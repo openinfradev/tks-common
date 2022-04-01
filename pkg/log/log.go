@@ -1,11 +1,11 @@
 package log
 
 import (
-	"os"
-	"strings"
-	"io/ioutil"
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -28,18 +28,18 @@ func init() {
 
 	logLevel := strings.ToLower(os.Getenv("LOG_LEVEL"))
 	switch logLevel {
-		case "debug":
-			logger.SetLevel(logrus.DebugLevel)
-		case "warning":
-			logger.SetLevel(logrus.WarnLevel)
-		case "info":
-			logger.SetLevel(logrus.InfoLevel)
-		case "error":
-			logger.SetLevel(logrus.ErrorLevel)
-		case "fatal":
-			logger.SetLevel(logrus.FatalLevel)
-		default:
-			logger.SetLevel(logrus.InfoLevel)
+	case "debug":
+		logger.SetLevel(logrus.DebugLevel)
+	case "warning":
+		logger.SetLevel(logrus.WarnLevel)
+	case "info":
+		logger.SetLevel(logrus.InfoLevel)
+	case "error":
+		logger.SetLevel(logrus.ErrorLevel)
+	case "fatal":
+		logger.SetLevel(logrus.FatalLevel)
+	default:
+		logger.SetLevel(logrus.InfoLevel)
 	}
 }
 
@@ -72,19 +72,18 @@ func Disable() {
 	logger.Out = ioutil.Discard
 }
 
-
-// grpc IO logging for client-side 
+// grpc IO logging for client-side
 func IOLoggingForClientSide() grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		err := invoker(ctx, method, req, reply, cc, opts...)
 
 		Info(fmt.Sprintf("[INTERNAL_CALL:%s][REQUEST %s][RESPONSE %s]", method, req, reply))
-		
+
 		return err
 	}
 }
 
-// grpc IO logging for server-side 
+// grpc IO logging for server-side
 func IOLoggingForServerSide() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
 		Info(fmt.Sprintf("[START:%s][REQUEST %s]", info.FullMethod, req))
