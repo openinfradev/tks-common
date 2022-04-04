@@ -19,6 +19,7 @@ import (
 )
 
 type Client interface {
+	GetWorkflow(ctx context.Context, workflowId string, namespace string) (wfv1.WorkflowPhase, string, error)
 	SumbitWorkflowFromWftpl(ctx context.Context, wftplName string, namespace string, parameters []string) (string, error)
 	IsRunningWorkflowByContractId(ctx context.Context, nameSpace string, contractId string) (bool, error)
 	WaitWorkflows(ctx context.Context, namespace string, workflowNames []string, ignoreNotFound, quiet bool) bool
@@ -64,13 +65,26 @@ func (c *ArgoClient) SumbitWorkflowFromWftpl(ctx context.Context, wftplName stri
 	})
 
 	if err != nil {
-		log.Error("Failed to submit : err ", err)
+		log.Error("Failed to submit argo workflow. err ", err)
 		return "", err
 	}
 
-	log.Debug("SumbitWorkflowFromWftpl created name : ", created.Name)
-
 	return created.Name, nil
+}
+
+func (c *ArgoClient) GetWorkflow(ctx context.Context, workflowId string, namespace string) (wfv1.WorkflowPhase, string, error) {
+	workflow, err := c.serviceClient.GetWorkflow(ctx, &workflowpkg.WorkflowGetRequest{
+		Name:      workflowId,
+		Namespace: "argo",
+	})
+	if err != nil {
+		log.Error("Failed to get argo workflow. err ", err)
+		return "", "", err
+	}
+
+	message := fmt.Sprintf("(%s) %s", workflow.Status.Progress, workflow.Status.Message)
+
+	return workflow.Status.Phase, message, nil
 }
 
 func (c *ArgoClient) IsRunningWorkflowByContractId(ctx context.Context, nameSpace string, contractId string) (bool, error) {
@@ -81,12 +95,11 @@ func (c *ArgoClient) IsRunningWorkflowByContractId(ctx context.Context, nameSpac
 	})
 
 	if err != nil {
-		log.Error("failed to get argo workflows namespace. err : ", err)
+		log.Error("failed to get argo workflows. err : ", err)
 		return false, err
 	}
 
 	for _, item := range wfList.Items {
-		log.Debug(item)
 		for _, arg := range item.Spec.Arguments.Parameters {
 			if arg.Name == "contract_id" && arg.Value.String() == contractId {
 				return true, errors.New("Existed running(pending) workflow")
@@ -136,7 +149,6 @@ func (c *ArgoClient) waitOnOne(ctx context.Context, wfName, namespace string, ig
 	for {
 		event, err := stream.Recv()
 		if err == io.EOF {
-			log.Debug("Re-establishing workflow watch")
 			stream, _ = c.serviceClient.WatchWorkflows(ctx, req)
 			continue
 		}
