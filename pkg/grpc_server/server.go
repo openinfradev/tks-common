@@ -6,12 +6,11 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
- 
+
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 
 	"github.com/openinfradev/tks-common/pkg/log"
-
 )
 
 func CreateServer(port int, tlsEnabled bool, certPath string, keyPath string) (*grpc.Server, net.Listener, error) {
@@ -28,8 +27,8 @@ func CreateServer(port int, tlsEnabled bool, certPath string, keyPath string) (*
 			grpc_middleware.ChainUnaryServer(
 				grpc_recovery.UnaryServerInterceptor(),
 				log.IOLoggingForServerSide(),
-	    	),
-	    ),
+			),
+		),
 	}
 
 	if tlsEnabled {
@@ -54,4 +53,3 @@ func loadTLSCredentials(certPath string, keyPath string) (credentials.TransportC
 
 	return creds, nil
 }
-

@@ -11,7 +11,7 @@ import (
 	pb "github.com/openinfradev/tks-proto/tks_pb"
 )
 
-func CreateCspInfoClient(address string, port int, tlsEnabled bool, certPath string ) (*grpc.ClientConn, pb.CspInfoServiceClient, error) {
+func CreateCspInfoClient(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, pb.CspInfoServiceClient, error) {
 	cc, err := createConnection(address, port, tlsEnabled, certPath)
 	if err != nil {
 		log.Fatal("Could not connect to gRPC server", err)
@@ -51,13 +51,12 @@ func CreateAppInfoClient(address string, port int, tlsEnabled bool, certPath str
 	return cc, sc, nil
 }
 
-
 func createConnection(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, error) {
 	var err error
 	var creds credentials.TransportCredentials
 
 	if tlsEnabled {
-		creds, err = loadTLSClientCredential( certPath )
+		creds, err = loadTLSClientCredential(certPath)
 		if err != nil {
 			return nil, err
 		}
@@ -90,4 +89,3 @@ func loadTLSClientCredential(clientCertPath string) (credentials.TransportCreden
 
 	return creds, nil
 }
-
