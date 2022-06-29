@@ -36,7 +36,7 @@ func New(host string, port int) (Client, error) {
 			URL:                baseUrl,
 			Secure:             false,
 			InsecureSkipVerify: false,
-			HTTP1:              true,
+			HTTP1:              false,
 		},
 		AuthSupplier: func() string {
 			return ""
