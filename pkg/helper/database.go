@@ -3,11 +3,12 @@ package helper
 import (
 	"database/sql"
 	"fmt"
+	"net"
+	"time"
+
 	_ "github.com/lib/pq"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
-	"net"
-	"time"
 )
 
 const postgresVersion = "latest"
