@@ -10,12 +10,14 @@ var (
 	ID_LENGTH          = 9
 )
 
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
 func GenerateClusterId() string {
-	return CLUSTER_ID_PREFIX + RandStringBytesRmndr(ID_LENGTH)
+	return CLUSTER_ID_PREFIX + randStringBytesRmndr(ID_LENGTH-1)
 }
 
 func GenerateContractId() string {
-	return CONTRACT_ID_PREFIX + RandStringBytesRmndr(ID_LENGTH)
+	return CONTRACT_ID_PREFIX + randStringBytesRmndr(ID_LENGTH-1)
 }
 
 func ValidateClusterId(id string) bool {
@@ -41,26 +43,13 @@ func ValidateContractId(id string) bool {
 }
 
 func validateId(id string) bool {
-	if len(id) != ID_LENGTH {
-		return false
-	}
-	return true
+	return len(id) == ID_LENGTH
 }
 
-func RandStringBytesRmndr(n int) string {
-	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	b := make([]byte, n-1)
+func randStringBytesRmndr(n int) string {
+	b := make([]byte, n)
 	for i := range b {
 		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
 	}
 	return string(b)
 }
-
-/*
-func randomBase64String(l int) string {
-	buff := make([]byte, int(math.Ceil(float64(l)/float64(1.33333333333))))
-	rand.Read(buff)
-	str := base64.RawURLEncoding.EncodeToString(buff)
-	return str[:l-1]
-}
-*/
