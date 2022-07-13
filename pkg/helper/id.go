@@ -2,54 +2,64 @@ package helper
 
 import (
 	"math/rand"
+	"strings"
 )
 
 var (
-	CLUSTER_ID_PREFIX  = "C"
-	CONTRACT_ID_PREFIX = "P"
-	ID_LENGTH          = 9
+	PREFIX_CLUSTER_ID           = "c"
+	PREFIX_CONTRACT_ID          = "p"
+	PREFIX_APPLICATION_GROUP_ID = "a"
+	ID_LENGTH                   = 9
 )
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const LETTERS_FOR_ID = "abcdefghijklmnopqrstuvwxyz0123456789" // lowercase RFC 1123
 
 func GenerateClusterId() string {
-	return CLUSTER_ID_PREFIX + randStringBytesRmndr(ID_LENGTH-1)
+	return PREFIX_CLUSTER_ID + randomString(ID_LENGTH-1)
 }
 
 func GenerateContractId() string {
-	return CONTRACT_ID_PREFIX + randStringBytesRmndr(ID_LENGTH-1)
+	return PREFIX_CONTRACT_ID + randomString(ID_LENGTH-1)
+}
+
+func GenerateApplicaionGroupId() string {
+	return PREFIX_APPLICATION_GROUP_ID + randomString(ID_LENGTH-1)
 }
 
 func ValidateClusterId(id string) bool {
-	if id == "" {
-		return false
-	}
-
-	if id[0:1] != CLUSTER_ID_PREFIX {
+	if !strings.HasPrefix(id, PREFIX_CLUSTER_ID) {
 		return false
 	}
 	return validateId(id)
 }
 
 func ValidateContractId(id string) bool {
-	if id == "" {
+	if !strings.HasPrefix(id, PREFIX_CONTRACT_ID) {
 		return false
 	}
+	return validateId(id)
+}
 
-	if id[0:1] != CONTRACT_ID_PREFIX {
+func ValidateApplicationGroupId(id string) bool {
+	if !strings.HasPrefix(id, PREFIX_APPLICATION_GROUP_ID) {
 		return false
 	}
 	return validateId(id)
 }
 
 func validateId(id string) bool {
+	for i := 0; i < len(id); i++ {
+		if !strings.Contains(LETTERS_FOR_ID, string(id[i])) {
+			return false
+		}
+	}
 	return len(id) == ID_LENGTH
 }
 
-func randStringBytesRmndr(n int) string {
+func randomString(n int) string {
 	b := make([]byte, n)
 	for i := range b {
-		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
+		b[i] = LETTERS_FOR_ID[rand.Int63()%int64(len(LETTERS_FOR_ID))]
 	}
 	return string(b)
 }
