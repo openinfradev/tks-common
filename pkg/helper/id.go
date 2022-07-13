@@ -5,12 +5,13 @@ import (
 )
 
 var (
-	CLUSTER_ID_PREFIX  = "C"
-	CONTRACT_ID_PREFIX = "P"
+	CLUSTER_ID_PREFIX  = "c"
+	CONTRACT_ID_PREFIX = "p"
 	ID_LENGTH          = 9
 )
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+// lowercase RFC 1123
+const letterBytes = "abcdefghijklmnopqrstuvwxyz0123456789"
 
 func GenerateClusterId() string {
 	return CLUSTER_ID_PREFIX + randStringBytesRmndr(ID_LENGTH-1)
