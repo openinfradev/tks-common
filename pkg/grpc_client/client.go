@@ -62,6 +62,16 @@ func CreateLcmClient(address string, port int, tlsEnabled bool, certPath string)
 	return cc, sc, nil
 }
 
+func CreateAppServeAppClient(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, pb.AppServeAppServiceClient, error) {
+	cc, err := createConnection(address, port, tlsEnabled, certPath)
+	if err != nil {
+		log.Fatal("Could not connect to gRPC server", err)
+		return nil, nil, err
+	}
+	sc := pb.NewAppServeAppServiceClient(cc)
+	return cc, sc, nil
+}
+
 func createConnection(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, error) {
 	var err error
 	var creds credentials.TransportCredentials
