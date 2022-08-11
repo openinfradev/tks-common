@@ -2,6 +2,7 @@ package grpc_client
 
 import (
 	"fmt"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -48,6 +49,16 @@ func CreateAppInfoClient(address string, port int, tlsEnabled bool, certPath str
 		return nil, nil, err
 	}
 	sc := pb.NewAppInfoServiceClient(cc)
+	return cc, sc, nil
+}
+
+func CreateLcmClient(address string, port int, tlsEnabled bool, certPath string) (*grpc.ClientConn, pb.ClusterLcmServiceClient, error) {
+	cc, err := createConnection(address, port, tlsEnabled, certPath)
+	if err != nil {
+		log.Fatal("Could not connect to gRPC server", err)
+		return nil, nil, err
+	}
+	sc := pb.NewClusterLcmServiceClient(cc)
 	return cc, sc, nil
 }
 
