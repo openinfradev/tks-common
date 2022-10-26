@@ -77,7 +77,7 @@ func IOLoggingForClientSide() grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		err := invoker(ctx, method, req, reply, cc, opts...)
 
-		Info(fmt.Sprintf("[INTERNAL_CALL:%s][REQUEST %s][RESPONSE %s]", method, req, reply))
+		Debug(fmt.Sprintf("[INTERNAL_CALL:%s][REQUEST %s][RESPONSE %s]", method, req, reply))
 
 		return err
 	}
@@ -86,14 +86,14 @@ func IOLoggingForClientSide() grpc.UnaryClientInterceptor {
 // grpc IO logging for server-side
 func IOLoggingForServerSide() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
-		Info(fmt.Sprintf("[START:%s][REQUEST %s]", info.FullMethod, req))
+		Debug(fmt.Sprintf("[START:%s][REQUEST %s]", info.FullMethod, req))
 
 		res, err := handler(ctx, req)
 		if err != nil {
 			Error(err)
 		}
 
-		Info(fmt.Sprintf("[END:%s][RESPONSE %s]", info.FullMethod, res))
+		Debug(fmt.Sprintf("[END:%s][RESPONSE %s]", info.FullMethod, res))
 
 		return res, err
 	}
