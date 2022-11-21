@@ -35,8 +35,8 @@ func New(host string, port int) (Client, error) {
 		ArgoServerOpts: apiclient.ArgoServerOpts{
 			URL:                baseUrl,
 			Secure:             false,
-			InsecureSkipVerify: false,
-			HTTP1:              false,
+			InsecureSkipVerify: true,
+			HTTP1:              true,
 		},
 		AuthSupplier: func() string {
 			return ""
