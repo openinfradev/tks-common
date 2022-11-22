@@ -5,11 +5,10 @@
 package mock_argowf
 
 import (
-	context "context"
 	reflect "reflect"
 
-	v1alpha1 "github.com/argoproj/argo-workflows/v3/pkg/apis/workflow/v1alpha1"
 	gomock "github.com/golang/mock/gomock"
+	argowf "github.com/openinfradev/tks-common/pkg/argowf"
 )
 
 // MockClient is a mock of Client interface.
@@ -36,61 +35,61 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 }
 
 // GetWorkflow mocks base method.
-func (m *MockClient) GetWorkflow(ctx context.Context, workflowId, namespace string) (v1alpha1.WorkflowPhase, string, error) {
+func (m *MockClient) GetWorkflow(namespace, workflowName string) (*argowf.Workflow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetWorkflow", ctx, workflowId, namespace)
-	ret0, _ := ret[0].(v1alpha1.WorkflowPhase)
-	ret1, _ := ret[1].(string)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetWorkflow indicates an expected call of GetWorkflow.
-func (mr *MockClientMockRecorder) GetWorkflow(ctx, workflowId, namespace interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWorkflow", reflect.TypeOf((*MockClient)(nil).GetWorkflow), ctx, workflowId, namespace)
-}
-
-// IsRunningWorkflowByContractId mocks base method.
-func (m *MockClient) IsRunningWorkflowByContractId(ctx context.Context, nameSpace, contractId string) (bool, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsRunningWorkflowByContractId", ctx, nameSpace, contractId)
-	ret0, _ := ret[0].(bool)
+	ret := m.ctrl.Call(m, "GetWorkflow", namespace, workflowName)
+	ret0, _ := ret[0].(*argowf.Workflow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// IsRunningWorkflowByContractId indicates an expected call of IsRunningWorkflowByContractId.
-func (mr *MockClientMockRecorder) IsRunningWorkflowByContractId(ctx, nameSpace, contractId interface{}) *gomock.Call {
+// GetWorkflow indicates an expected call of GetWorkflow.
+func (mr *MockClientMockRecorder) GetWorkflow(namespace, workflowName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsRunningWorkflowByContractId", reflect.TypeOf((*MockClient)(nil).IsRunningWorkflowByContractId), ctx, nameSpace, contractId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWorkflow", reflect.TypeOf((*MockClient)(nil).GetWorkflow), namespace, workflowName)
+}
+
+// GetWorkflowTemplates mocks base method.
+func (m *MockClient) GetWorkflowTemplates(namespace string) (*argowf.GetWorkflowTemplatesResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetWorkflowTemplates", namespace)
+	ret0, _ := ret[0].(*argowf.GetWorkflowTemplatesResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWorkflowTemplates indicates an expected call of GetWorkflowTemplates.
+func (mr *MockClientMockRecorder) GetWorkflowTemplates(namespace interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWorkflowTemplates", reflect.TypeOf((*MockClient)(nil).GetWorkflowTemplates), namespace)
+}
+
+// GetWorkflows mocks base method.
+func (m *MockClient) GetWorkflows(namespace string) (*argowf.GetWorkflowsResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetWorkflows", namespace)
+	ret0, _ := ret[0].(*argowf.GetWorkflowsResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWorkflows indicates an expected call of GetWorkflows.
+func (mr *MockClientMockRecorder) GetWorkflows(namespace interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWorkflows", reflect.TypeOf((*MockClient)(nil).GetWorkflows), namespace)
 }
 
 // SumbitWorkflowFromWftpl mocks base method.
-func (m *MockClient) SumbitWorkflowFromWftpl(ctx context.Context, wftplName, namespace string, parameters []string) (string, error) {
+func (m *MockClient) SumbitWorkflowFromWftpl(wftplName, targetNamespace string, opts argowf.SubmitOptions) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SumbitWorkflowFromWftpl", ctx, wftplName, namespace, parameters)
+	ret := m.ctrl.Call(m, "SumbitWorkflowFromWftpl", wftplName, targetNamespace, opts)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SumbitWorkflowFromWftpl indicates an expected call of SumbitWorkflowFromWftpl.
-func (mr *MockClientMockRecorder) SumbitWorkflowFromWftpl(ctx, wftplName, namespace, parameters interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) SumbitWorkflowFromWftpl(wftplName, targetNamespace, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SumbitWorkflowFromWftpl", reflect.TypeOf((*MockClient)(nil).SumbitWorkflowFromWftpl), ctx, wftplName, namespace, parameters)
-}
-
-// WaitWorkflows mocks base method.
-func (m *MockClient) WaitWorkflows(ctx context.Context, namespace string, workflowNames []string, ignoreNotFound, quiet bool) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WaitWorkflows", ctx, namespace, workflowNames, ignoreNotFound, quiet)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// WaitWorkflows indicates an expected call of WaitWorkflows.
-func (mr *MockClientMockRecorder) WaitWorkflows(ctx, namespace, workflowNames, ignoreNotFound, quiet interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitWorkflows", reflect.TypeOf((*MockClient)(nil).WaitWorkflows), ctx, namespace, workflowNames, ignoreNotFound, quiet)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SumbitWorkflowFromWftpl", reflect.TypeOf((*MockClient)(nil).SumbitWorkflowFromWftpl), wftplName, targetNamespace, opts)
 }
