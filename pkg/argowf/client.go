@@ -53,7 +53,7 @@ func (c *ArgoClient) GetWorkflowTemplates(namespace string) (*GetWorkflowTemplat
 	}
 	if res.StatusCode != 200 {
 		log.Error("error from get workflow-templats return code: ", res.StatusCode)
-		return "", fmt.Errorf("Invalid http status %s", res.StatusCode)
+		return nil, fmt.Errorf("Invalid http status %s", res.StatusCode)
 	}
 	defer func() {
 		if err := res.Body.Close(); err != nil {
@@ -82,7 +82,7 @@ func (c *ArgoClient) GetWorkflow(namespace string, workflowName string) (*Workfl
 	}
 	if res.StatusCode != 200 {
 		log.Error("error from get workflow return code: ", res.StatusCode)
-		return "", fmt.Errorf("Invalid http status %s", res.StatusCode)
+		return nil, fmt.Errorf("Invalid http status %s", res.StatusCode)
 	}
 	defer func() {
 		if err := res.Body.Close(); err != nil {
@@ -112,7 +112,7 @@ func (c *ArgoClient) GetWorkflows(namespace string) (*GetWorkflowsResponse, erro
 	}
 	if res.StatusCode != 200 {
 		log.Error("error from get workflow-templats return code: ", res.StatusCode)
-		return "", fmt.Errorf("Invalid http status %s", res.StatusCode)
+		return nil, fmt.Errorf("Invalid http status %s", res.StatusCode)
 	}
 	defer func() {
 		if err := res.Body.Close(); err != nil {
